@@ -30,7 +30,7 @@ class StockTechnicalAnalyzer:
     - Stock scanning
     """
 
-    def __init__(self, period="3y", interval="1d",exchange_suffix=".NS",fmp_api_key=None, openai_key=None):
+    def __init__(self, period="5y", interval="1d",exchange_suffix=".NS",fmp_api_key=None, openai_key=None):
         self.fundamental = FundamentalAnalyser(
             fmp_api_key=fmp_api_key,
             openai_key=openai_key
@@ -710,6 +710,7 @@ class StockTechnicalAnalyzer:
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
+
 
 
 
