@@ -507,11 +507,11 @@ class StockTechnicalAnalyzer:
         Returns a dictionary usable in generate_technical_prompt().
         """
         # df.columns = (df.columns.str.replace("\n", " ").str.replace("\r", " ").str.strip())
-        df.columns = (
-        df.columns
-        .str.replace(r"[\n\r]+", " ", regex=True)
-        .str.strip()
-        )
+        # df.columns = (
+        # df.columns
+        # .str.replace(r"[\n\r]+", " ", regex=True)
+        # .str.strip()
+        # )
 
         # Filter DF
         data = df[df['Ticker'] == ticker]
@@ -710,6 +710,7 @@ class StockTechnicalAnalyzer:
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
+
 
 
 
