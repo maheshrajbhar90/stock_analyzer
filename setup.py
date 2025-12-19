@@ -8,7 +8,7 @@ setup(
     author_email='maheshrajbhar90@gmail.com',
 
     description='A Python library for comprehensive stock technical analysis.',
-    long_description=open('README.md').read(),
+    long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type='text/markdown',
     url='https://github.com/maheshrajbhar90/stock_analyzer.git',  # Replace with your actual GitHub URL
     packages=find_packages(),
@@ -27,5 +27,6 @@ setup(
     ],
     python_requires='>=3.8',
 )
+
 
 
