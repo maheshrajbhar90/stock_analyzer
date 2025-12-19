@@ -29,7 +29,7 @@ class FundamentalAnalyser:
 
     # ---------- Data Fetch ----------
     def fetch_yf_financials(self, symbol):
-        tk = yf.Ticker(symbol.+self.exchange_suffix)
+        tk = yf.Ticker(symbol+self.exchange_suffix)
         return {
             "income": tk.financials,
             "balance": tk.balance_sheet,
@@ -150,4 +150,5 @@ class FundamentalAnalyser:
             "prompt": prompt,
             "llm_analysis": llm_output,
         }
+
 
