@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-AutoSmartAPI Package
 This package contains modules for extracting data and genrating the signal, and creating prompt for LLM models.
 
 Author: Mahesh Kumar
