@@ -1,4 +1,3 @@
-# stock_analyzer.py
 
 import pandas as pd
 import yfinance as yf
@@ -706,4 +705,5 @@ class StockTechnicalAnalyzer:
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
+
 
