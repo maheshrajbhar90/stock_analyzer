@@ -1,6 +1,0 @@
-pandas
-yfinance
-TA-Lib
-requests
-tabulate
-openai
