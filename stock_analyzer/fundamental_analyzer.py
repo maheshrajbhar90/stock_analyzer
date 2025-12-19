@@ -11,10 +11,11 @@ FMP_BASE = "https://financialmodelingprep.com/api/v3"
 
 
 class FundamentalAnalyser:
-    def __init__(self, fmp_api_key=None, openai_key=None):
+    def __init__(self, fmp_api_key=None, openai_key=None,exchange_suffix=".NS"):
         self.fmp_api_key = fmp_api_key
         self.openai_key = openai_key
         self.client = OpenAI(api_key=openai_key) if openai_key else None
+        self.exchange_suffix=exchange_suffix
 
     # ---------- Utils ----------
     @staticmethod
@@ -28,7 +29,7 @@ class FundamentalAnalyser:
 
     # ---------- Data Fetch ----------
     def fetch_yf_financials(self, symbol):
-        tk = yf.Ticker(symbol.+".NS")
+        tk = yf.Ticker(symbol.+self.exchange_suffix)
         return {
             "income": tk.financials,
             "balance": tk.balance_sheet,
@@ -149,3 +150,4 @@ class FundamentalAnalyser:
             "prompt": prompt,
             "llm_analysis": llm_output,
         }
+
