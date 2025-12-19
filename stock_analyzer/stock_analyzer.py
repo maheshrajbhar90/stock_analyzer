@@ -429,10 +429,10 @@ class StockTechnicalAnalyzer:
 
     def push_final_result(self,final_result):
 
-        # import os
-        # import gspread
-        # from google.colab import drive
-        # drive.mount('/content/drive')
+        import os
+        import gspread
+        from google.colab import drive
+        drive.mount('/content/drive')
 
         """
         Push final_result to Google Sheet (fixed json, sheet url, sheet name).
@@ -710,6 +710,7 @@ class StockTechnicalAnalyzer:
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
+
 
 
 
