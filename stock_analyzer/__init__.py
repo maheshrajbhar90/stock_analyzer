@@ -9,7 +9,7 @@ Version: 0.0.0.1
 """
 
 # Import the main classes and functions that should be accessible when the package is imported
-from .stock_analyzer import FundamentalAnalyser  # Assuming your main class is in a file named 'stock_analyzer.py'
+from .stock_analyzer import StockTechnicalAnalyzer  # Assuming your main class is in a file named 'stock_analyzer.py'
 
 # You can also define version number here if needed
 __version__ = '0.0.0.1'
