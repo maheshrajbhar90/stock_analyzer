@@ -498,7 +498,7 @@ class StockTechnicalAnalyzer:
         #     metrics_text += f"{key}: {value}\n"
         # print(metrics_text)
 
-        prompt_1 = textwrap.dedent( f"""
+        prompt_1 = textwrap.dedent(f"""
         You are an expert Technical Analyst specializing in stock chart analysis for Indian equities.
 
         Analyze the stock **{ticker}** using the technical indicators provided below.
@@ -668,6 +668,7 @@ class StockTechnicalAnalyzer:
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
+
 
 
 
