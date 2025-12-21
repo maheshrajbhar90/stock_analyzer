@@ -481,9 +481,11 @@ class StockTechnicalAnalyzer:
 
         return tech_data
 
-import textwrap
+    
 
     def generate_technical_prompt(self, ticker, tech_data,mode="simple"):
+        import textwrap
+        
         """
         Same prompt generator you provided, unchanged.
         """
@@ -649,7 +651,6 @@ import textwrap
 
         """).strip()
         if mode == "scoring":
-            
             print(prompt_2)
             return prompt_2
         print(prompt_1)
@@ -667,6 +668,7 @@ import textwrap
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
+
 
 
 
