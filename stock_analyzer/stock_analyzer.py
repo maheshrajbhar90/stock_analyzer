@@ -353,7 +353,7 @@ class StockTechnicalAnalyzer:
         return ohlc_df
 
 
-    def get_latest_candlestick_patterns(self,symbols,periods=None,interval=None):
+    def get_latest_candlestick_patterns(self,symbols,periods=None,interval=None,progress=True):
         periods = periods or self.period
         intervals = interval or self.interval
         result_df = []
@@ -362,7 +362,7 @@ class StockTechnicalAnalyzer:
         try:
 
             for tick in symbols:
-                ohlc_df = yf.download(tick + self.exchange_suffix,period=periods, interval=intervals, auto_adjust=True)
+                ohlc_df = yf.download(tick + self.exchange_suffix,period=periods, interval=intervals, auto_adjust=True,progress=progress)
                 # ohlc_df now has DatetimeIndex
                 ohlc_df=ohlc_df.droplevel(level=1,axis=1)
                 # ohlc_df=ohlc_df.iloc[:-1] ## removes the last row (today’s candle)
@@ -427,7 +427,7 @@ class StockTechnicalAnalyzer:
             on=["Date", "Ticker"], how="left")
         return combined_df
 
-    def main(self,ticker:list):
+    def main(self,ticker:list,progress=True):
 
         columns_order = [
         'Date','Ticker','Close','Change%','Volume','VMA20','Z_score','Volume_Spike','EMA5','EMA9','EMA26','SMA50','SMA200',
@@ -441,7 +441,7 @@ class StockTechnicalAnalyzer:
         # combined_tickers=list(dict.fromkeys(nifty_50+nifty_100+mid_cap100))
 
         # Get latest candlestick patterns for Nifty 50 symbols
-        final_result = self.get_latest_candlestick_patterns(ticker)
+        final_result = self.get_latest_candlestick_patterns(ticker,progress)
         if final_result is not None: # Add this check
 
             # final_result=final_result[columns_order]
@@ -449,7 +449,7 @@ class StockTechnicalAnalyzer:
 
             final_result=final_result.round(2)
             # final_result=final_result.sort_values(by='Z_score',ascending=False)
-            print("Success")
+            # print("Success")
         else:
             print("No valid data to process after fetching candlestick patterns. Check the console for errors and ensure `analyze_stock` is functioning correctly.")
 
@@ -664,6 +664,7 @@ class StockTechnicalAnalyzer:
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
+
 
 
 
