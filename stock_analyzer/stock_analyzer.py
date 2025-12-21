@@ -353,7 +353,7 @@ class StockTechnicalAnalyzer:
         return ohlc_df
 
 
-    def get_latest_candlestick_patterns(self,symbols,periods=None,interval=None,progress=True):
+    def get_latest_candlestick_patterns(self,symbols,periods=None,interval=None):
         periods = periods or self.period
         intervals = interval or self.interval
         result_df = []
@@ -362,7 +362,7 @@ class StockTechnicalAnalyzer:
         try:
 
             for tick in symbols:
-                ohlc_df = yf.download(tick + self.exchange_suffix,period=periods, interval=intervals, auto_adjust=True,progress=progress)
+                ohlc_df = yf.download(tick + self.exchange_suffix,period=periods, interval=intervals, auto_adjust=True)
                 # ohlc_df now has DatetimeIndex
                 ohlc_df=ohlc_df.droplevel(level=1,axis=1)
                 # ohlc_df=ohlc_df.iloc[:-1] ## removes the last row (today’s candle)
@@ -427,7 +427,7 @@ class StockTechnicalAnalyzer:
             on=["Date", "Ticker"], how="left")
         return combined_df
 
-    def main(self,ticker:list,progress=True):
+    def main(self,ticker:list):
 
         columns_order = [
         'Date','Ticker','Close','Change%','Volume','VMA20','Z_score','Volume_Spike','EMA5','EMA9','EMA26','SMA50','SMA200',
@@ -664,6 +664,7 @@ class StockTechnicalAnalyzer:
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
+
 
 
 
