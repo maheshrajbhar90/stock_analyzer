@@ -6,6 +6,7 @@ import warnings
 warnings.filterwarnings("ignore")
 import os
 import sys
+import textwrap
 
 # Ensure the directory of the current script is in the path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -484,7 +485,6 @@ class StockTechnicalAnalyzer:
     
 
     def generate_technical_prompt(self, ticker, tech_data,mode="simple"):
-        import textwrap
         
         """
         Same prompt generator you provided, unchanged.
@@ -668,6 +668,7 @@ class StockTechnicalAnalyzer:
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
+
 
 
 
