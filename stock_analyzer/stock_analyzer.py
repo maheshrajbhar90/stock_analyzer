@@ -427,52 +427,6 @@ class StockTechnicalAnalyzer:
             on=["Date", "Ticker"], how="left")
         return combined_df
 
-    def push_final_result(self,final_result):
-
-        import os
-        import gspread
-        from google.colab import drive
-        drive.mount('/content/drive')
-
-        """
-        Push final_result to Google Sheet (fixed json, sheet url, sheet name).
-        """
-
-        file = "driven-origin-376016-e47a216e9e17.json"
-        path = '/content/drive/MyDrive/All Data'
-
-        final_result = final_result.copy()
-
-        # Replace inf values with None for JSON compatibility
-        final_result = final_result.replace([float('inf'), float('-inf')], None)
-
-        # Replace NaN values with None for JSON compatibility
-        final_result = final_result.where(pd.notna(final_result), None)
-
-        for col in final_result.columns:
-            if pd.api.types.is_datetime64_any_dtype(final_result[col]):
-                final_result[col] = final_result[col].astype(str)
-
-        # Authenticate
-        sa = gspread.service_account(filename=os.path.join(path, file))
-
-        # Open Sheet
-        sh = sa.open_by_url(
-            "https://docs.google.com/spreadsheets/d/1tTVMRs9bk8VnXo644vTewECTdGyS58JKMX6R_wZyFYY/edit?gid=0#gid=0"
-        )
-
-        # Select worksheet
-        ws = sh.worksheet('Stock_Scannner')
-
-        # Convert to list of lists
-        df_values = final_result.values.tolist()
-
-        # Push data
-        ws.update('A2', df_values)
-
-        print("✔ final_result pushed successfully!")
-        print("Success")
-
     def main(self,ticker:list):
 
         columns_order = [
@@ -710,6 +664,7 @@ class StockTechnicalAnalyzer:
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
+
 
 
 
