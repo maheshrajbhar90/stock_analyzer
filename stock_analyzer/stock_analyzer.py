@@ -441,7 +441,7 @@ class StockTechnicalAnalyzer:
         # combined_tickers=list(dict.fromkeys(nifty_50+nifty_100+mid_cap100))
 
         # Get latest candlestick patterns for Nifty 50 symbols
-        final_result = self.get_latest_candlestick_patterns(ticker,progress)
+        final_result = self.get_latest_candlestick_patterns(ticker)
         if final_result is not None: # Add this check
 
             # final_result=final_result[columns_order]
@@ -664,6 +664,7 @@ class StockTechnicalAnalyzer:
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
+
 
 
 
