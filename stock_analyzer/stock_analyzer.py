@@ -481,6 +481,7 @@ class StockTechnicalAnalyzer:
 
         return tech_data
 
+import textwrap
 
     def generate_technical_prompt(self, ticker, tech_data,mode="simple"):
         """
@@ -495,7 +496,7 @@ class StockTechnicalAnalyzer:
         #     metrics_text += f"{key}: {value}\n"
         # print(metrics_text)
 
-        prompt_1 = f"""
+        prompt_1 = textwrap.dedent( f"""
         You are an expert Technical Analyst specializing in stock chart analysis for Indian equities.
 
         Analyze the stock **{ticker}** using the technical indicators provided below.
@@ -569,8 +570,8 @@ class StockTechnicalAnalyzer:
         ----------------------------------------
 
         Now generate your full technical analysis.
-        """
-        prompt_2=f"""
+        """).strip()
+        prompt_2=textwrap.dedent(f"""
 
         You are an expert Technical Analyst. Analyze **{ticker}** using this systematic framework:
 
@@ -646,10 +647,12 @@ class StockTechnicalAnalyzer:
         - Cite specific data points from the provided metrics
         - Keep final reasoning concise and actionable
 
-        """
+        """).strip()
         if mode == "scoring":
-
+            
+            print(prompt_2)
             return prompt_2
+        print(prompt_1)
         return prompt_1
 
 
@@ -664,6 +667,7 @@ class StockTechnicalAnalyzer:
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
+
 
 
 
