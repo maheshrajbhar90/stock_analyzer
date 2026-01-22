@@ -362,7 +362,7 @@ class StockTechnicalAnalyzer:
         try:
 
             for tick in symbols:
-                ohlc_df = yf.download(tick + self.exchange_suffix,start_date, end_date, interval=intervals, auto_adjust=True)
+                ohlc_df = yf.download(tick + self.exchange_suffix,start_date, end_date, auto_adjust=True)
                 # ohlc_df now has DatetimeIndex
                 ohlc_df=ohlc_df.droplevel(level=1,axis=1)
                 # ohlc_df=ohlc_df.iloc[:-1] ## removes the last row (today’s candle)
@@ -667,6 +667,7 @@ class StockTechnicalAnalyzer:
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
+
 
 
 
