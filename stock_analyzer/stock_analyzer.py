@@ -31,22 +31,22 @@ class StockTechnicalAnalyzer:
     - Stock scanning
     """
 
-    def __init__(self, period="5y", interval="1d",exchange_suffix=".NS",fmp_api_key=None, openai_key=None):
+    def __init__(self,  interval="1d",exchange_suffix=".NS",fmp_api_key=None, openai_key=None):
         self.fundamental = FundamentalAnalyser(
             fmp_api_key=fmp_api_key,
             openai_key=openai_key
         )
-        self.period = period
         self.interval = interval
         self.exchange_suffix = exchange_suffix
 
     # =====================================================
     # 📌 DATA FETCH
     # =====================================================
-    def fetch_ohlc(self, ticker):
+    def fetch_ohlc(self, ticker,start_date, end_date):
         df = yf.download(
             ticker + self.exchange_suffix,
-            period=self.period,
+            start=start_date,
+            end=end_date,
             interval=self.interval,
             auto_adjust=True,
             progress=False
@@ -354,8 +354,7 @@ class StockTechnicalAnalyzer:
         return ohlc_df
 
 
-    def get_latest_candlestick_patterns(self,symbols,periods=None,interval=None):
-        periods = periods or self.period
+    def get_latest_candlestick_patterns(self,symbols,start_date, end_date,,interval=None):
         intervals = interval or self.interval
         result_df = []
         pattern_df=[]
@@ -363,7 +362,7 @@ class StockTechnicalAnalyzer:
         try:
 
             for tick in symbols:
-                ohlc_df = yf.download(tick + self.exchange_suffix,period=periods, interval=intervals, auto_adjust=True)
+                ohlc_df = yf.download(tick + self.exchange_suffix,start_date, end_date, interval=intervals, auto_adjust=True)
                 # ohlc_df now has DatetimeIndex
                 ohlc_df=ohlc_df.droplevel(level=1,axis=1)
                 # ohlc_df=ohlc_df.iloc[:-1] ## removes the last row (today’s candle)
@@ -428,7 +427,7 @@ class StockTechnicalAnalyzer:
             on=["Date", "Ticker"], how="left")
         return combined_df
 
-    def main(self,ticker:list):
+    def main(self,ticker:list,start_date: str, end_date: str):
 
         columns_order = [
         'Date','Ticker','Close','Change%','Volume','VMA20','Z_score','Volume_Spike','EMA5','EMA9','EMA26','SMA50','SMA200',
@@ -442,7 +441,7 @@ class StockTechnicalAnalyzer:
         # combined_tickers=list(dict.fromkeys(nifty_50+nifty_100+mid_cap100))
 
         # Get latest candlestick patterns for Nifty 50 symbols
-        final_result = self.get_latest_candlestick_patterns(ticker)
+        final_result = self.get_latest_candlestick_patterns(ticker,start_date=start_date,end_date=end_date)
         if final_result is not None: # Add this check
 
             # final_result=final_result[columns_order]
@@ -668,6 +667,7 @@ class StockTechnicalAnalyzer:
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
+
 
 
 
