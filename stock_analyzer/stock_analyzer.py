@@ -354,7 +354,7 @@ class StockTechnicalAnalyzer:
         return ohlc_df
 
 
-    def get_latest_candlestick_patterns(self,symbols,start_date, end_date,,interval=None):
+    def get_latest_candlestick_patterns(self,symbols,start_date, end_date,interval=None):
         intervals = interval or self.interval
         result_df = []
         pattern_df=[]
@@ -667,6 +667,7 @@ class StockTechnicalAnalyzer:
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
+
 
 
 
