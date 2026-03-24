@@ -7,6 +7,8 @@ warnings.filterwarnings("ignore")
 import os
 import sys
 import textwrap
+import math
+from typing import Dict, Any, Union
 
 # Ensure the directory of the current script is in the path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -23,6 +25,7 @@ except ImportError:
 
 
 class StockTechnicalAnalyzer:
+    
 
     """
     Full technical analysis engine:
@@ -667,10 +670,6 @@ class StockTechnicalAnalyzer:
         tech_prompt=self.generate_technical_prompt(ticker, tech_data)
 
         return tech_prompt
-
-    import yfinance as yf
-import math
-from typing import Dict, Any, Union
 
 def get_stock_fundamental_data(self,ticker: str) -> Dict[str, Any]:
     """
