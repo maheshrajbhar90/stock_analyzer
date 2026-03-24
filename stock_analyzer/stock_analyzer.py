@@ -301,13 +301,9 @@ class StockTechnicalAnalyzer:
             "inverted_hammer": talib.CDLINVERTEDHAMMER,
             "kicking": talib.CDLKICKING,
             "kicking_by_length": talib.CDLKICKINGBYLENGTH,
-            "ladder_bottom": talib.CDLLADDERBOTTOM,
             "matching_low": talib.CDLMATCHINGLOW,
             "morning_doji_star": talib.CDLMORNINGDOJISTAR,
             "morning_star": talib.CDLMORNINGSTAR,
-            "on_neck": talib.CDLONNECK,
-            "piercing": talib.CDLPIERCING,
-            "rickshaw_man": talib.CDLRICKSHAWMAN,
             "rise_fall_3_methods": talib.CDLRISEFALL3METHODS,
             "separating_lines": talib.CDLSEPARATINGLINES,
             "takuri": talib.CDLTAKURI,
@@ -335,8 +331,6 @@ class StockTechnicalAnalyzer:
             "on_neck": talib.CDLONNECK,
             "piercing": talib.CDLPIERCING,
             "rickshaw_man": talib.CDLRICKSHAWMAN,
-            "rise_fall_3_methods": talib.CDLRISEFALL3METHODS,
-            "separating_lines": talib.CDLSEPARATINGLINES,
             "shooting_star": talib.CDLSHOOTINGSTAR,
             "short_line": talib.CDLSHORTLINE,
             "spinning_top": talib.CDLSPINNINGTOP,
@@ -370,7 +364,7 @@ class StockTechnicalAnalyzer:
                 ohlc_df=ohlc_df.droplevel(level=1,axis=1)
                 # ohlc_df=ohlc_df.iloc[:-1] ## removes the last row (today’s candle)
 
-                if isinstance(ohlc_df.index, pd.DatetimeIndex) or'Datetime' in ohlc_df.columns:
+                if isinstance(ohlc_df.index, pd.DatetimeIndex) or 'Datetime' in ohlc_df.columns:
                     ohlc_df=ohlc_df.reset_index()
                 if 'Datetime' in ohlc_df.columns:
                     ohlc_df = ohlc_df.rename(columns={'Datetime': 'Date'})
@@ -750,7 +744,7 @@ class StockTechnicalAnalyzer:
             ticker: The stock symbol.
             mode: 'standard' for the first prompt style, 'detailed' for the second.
         """
-        data = get_stock_fundamental_data(ticker)
+        data = self.get_stock_fundamental_data(ticker)
         
         if "error" in data:
             return data["error"]
