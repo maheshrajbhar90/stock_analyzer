@@ -668,7 +668,156 @@ class StockTechnicalAnalyzer:
 
         return tech_prompt
 
+    import yfinance as yf
+import math
+from typing import Dict, Any, Union
 
+def get_stock_fundamental_data(self,ticker: str) -> Dict[str, Any]:
+    """
+    Fetches financial data and performs Graham Number valuation for a given ticker.
+    Supports Indian equities by auto-appending '.NS' if not present.
+    """
+    try:
+        # Normalize ticker and handle Indian equities suffix
+        ticker = ticker.strip().upper()
+        ticker_yf = ticker if ('.' in ticker) else f"{ticker}.NS"
+
+        stock = yf.Ticker(ticker_yf)
+
+        # 1. Automate Movement Detection (Last 2 Trading Days)
+        hist = stock.history(period="2d")
+        movement = "Data Unavailable"
+        percent_change = 0.0
+        curr_price = 0.0
+
+        if not hist.empty and len(hist) >= 2:
+            prev_close = hist['Close'].iloc[-2]
+            curr_price = hist['Close'].iloc[-1]
+            percent_change = ((curr_price - prev_close) / prev_close) * 100
+
+            if percent_change >= 2.0:
+                move_label = "sharp rise"
+            elif percent_change <= -2.0:
+                move_label = "sharp fall"
+            else:
+                move_label = "stable / sideways"
+
+            movement = f"{move_label} ({round(percent_change, 2)}%)"
+        
+        # 2. Fundamental Data Extraction (with fallbacks)
+        info = stock.info
+        current_price = curr_price if curr_price > 0 else (info.get('currentPrice') or info.get('regularMarketPrice', 0))
+        pe_ratio = info.get('trailingPE', "N/A")
+        eps = info.get('trailingEps', 0)
+        book_value = info.get('bookValue', 0)
+        sector = info.get('sector', 'Unknown Sector')
+
+        # 3. Graham Number Logic: sqrt(22.5 * EPS * BVPS)
+        # Using a guard clause for cleaner logic
+        if all([isinstance(eps, (int, float)), eps > 0, 
+                isinstance(book_value, (int, float)), book_value > 0]):
+            graham_num = round(math.sqrt(22.5 * eps * book_value), 2)
+            status = "Undervalued" if current_price < graham_num else "Overvalued"
+        else:
+            graham_num = "N/A"
+            status = "Insufficient Data for Valuation"
+
+        # 4. Defensive News Extraction
+        news_list = stock.news[:5] if stock.news else []
+        headline_list = [f"- {n.get('title', 'No Title Available')}" for n in news_list]
+        headlines = "\n".join(headline_list) if headline_list else "No recent news found."
+
+        return {
+            "Ticker": ticker,
+            "Price": current_price,
+            "P/E": pe_ratio,
+            "Graham_Number": graham_num,
+            "Movement": movement,
+            "Status": status,
+            "News": headlines,
+            "Sector": sector,
+            "Percent_Change": round(percent_change, 2)
+        }
+
+    except Exception as e:
+        return {"error": f"Failed to fetch data for {ticker}: {str(e)}"}
+
+
+def generate_fundamental_analysis_prompt(self,ticker: str, mode: str = "detailed") -> str:
+    """
+    Generates an LLM-ready prompt. 
+    
+    Args:
+        ticker: The stock symbol.
+        mode: 'standard' for the first prompt style, 'detailed' for the second.
+    """
+    data = get_stock_fundamental_data(ticker)
+    
+    if "error" in data:
+        return data["error"]
+
+    # --- PROMPT OPTION 1: STANDARD ---
+    prompt_standard = f"""
+    Act as a Senior Equity Research Analyst.
+    The stock with ticker symbol **{data['Ticker']}** has experienced a **{data['Movement']}** recently.
+
+    Please perform the following analysis:
+    1. Identify the company name associated with the ticker {data['Ticker']}.
+    2. Summarize the recent stock price movement:
+       - Percentage change: {data['Percent_Change']}%
+       - Timeframe: Last 2 Trading Days
+    3. **Quantitative Valuation Analysis:**
+       - Interpret the provided P/E of "{data['P/E']}" against industry medians.
+       - Use the Graham Number ("{data['Graham_Number']}") to explain the margin of safety.
+       - Explain the "{data['Status']}" status relative to current price.
+    4. Analyze recent news and events:
+    {data['News']}
+    5. Link news to potential price impact.
+    6. Distinguish between sentiment and fundamentals.
+    7. Highlight risks and catalysts.
+    
+    Output: Structured report with 'Executive Summary', 'Fundamental Valuation', and 'Catalyst Analysis'.
+    """
+
+    # --- PROMPT OPTION 2: DETAILED (Production Standards) ---
+    prompt_detailed = f"""
+    ### ROLE
+    Act as a Senior Equity Research Analyst specializing in the {data.get('Sector')} sector. 
+
+    ### METRIC SNAPSHOT
+    - **Ticker**: {data['Ticker']}
+    - **Current Price**: {data['Price']}
+    - **Recent Movement**: {data['Movement']}
+    - **Trailing P/E**: {data['P/E']}
+    - **Graham Number (Intrinsic Value)**: {data['Graham_Number']}
+    - **Valuation Status**: {data['Status']}
+
+    ### MANDATORY ANALYSIS SCOPE
+    The stock {data['Ticker']} has experienced a {data['Movement']} recently. Perform the following:
+    1. **Price Action**: Quantify the {data['Percent_Change']}% change over the recent period.
+    2. **Quantitative Valuation**: 
+       - Evaluate P/E of "{data['P/E']}" vs Sector Medians.
+       - Using Graham Number ("{data['Graham_Number']}"), calculate 'Margin of Safety'.
+       - Justify the "{data['Status']}" status.
+    3. **Catalyst & News Audit**: 
+    {data['News']}
+    4. **Impact Mapping**: Link news events to specific price deltas.
+    5. **Sentiment vs. Fundamentals**: Distinguish short-term noise from long-term shifts.
+    6. **Outlook**: Highlight risks and upcoming catalysts.
+
+    ### OUTPUT ARCHITECTURE
+    Format as a professional Equity Research Note:
+    - **Section 1: Executive Summary**
+    - **Section 2: Fundamental Valuation**
+    - **Section 3: Catalyst Analysis**
+    """
+
+    return prompt_detailed if mode == "detailed" else prompt_standard
+
+# --- Example of how to use this in your existing package ---
+# from your_filename import generate_stock_analysis_prompt
+# print(generate_stock_analysis_prompt("RELIANCE", mode="standard"))
+# print(generate_stock_analysis_prompt("RELIANCE", mode="detailed"))
 
 
 
