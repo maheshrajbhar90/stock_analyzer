@@ -647,9 +647,9 @@ class StockTechnicalAnalyzer:
 
         """).strip()
         if mode == "scoring":
-            print(prompt_2)
+            # print(prompt_2)
             return prompt_2
-        print(prompt_1)
+        # print(prompt_1)
         return prompt_1
 
 
